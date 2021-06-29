@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener  {
             mcursor!!.moveToNext()
         }
         imageView.setImageURI(imageUri)
+        Log.d("ANDROID","imageUri")
     }
     private fun show_Prev(){
 
@@ -90,30 +91,44 @@ class MainActivity : AppCompatActivity(), View.OnClickListener  {
     }
     private fun startStop(){
 
-        val fieldIndex = mcursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-        val id = mcursor!!.getLong(fieldIndex)
-        val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+        //var fieldIndex = mcursor!!.getColumnIndex(MediaStore.Images.Media._ID)
+        //var id = mcursor!!.getLong(fieldIndex)
+        //var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
 
         if (mTimer == null){
             mTimer = Timer()
             mTimer!!.schedule(object : TimerTask() {
                 override fun run() {
-                    //mTimerSec += 0.1
                     mHandler.post {
                         //ここに記入
                         if(mcursor!!.isLast()){
-                            //mcursor!!.moveToFirst()
+                            mcursor!!.moveToFirst()
                         } else {
                             mcursor!!.moveToNext()
                         }
+                        var fieldIndex = mcursor!!.getColumnIndex(MediaStore.Images.Media._ID)
+                        var id = mcursor!!.getLong(fieldIndex)
+                        var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                         imageView.setImageURI(imageUri)
+                        Log.d("ANDROID","imageUri")
+
+                        next_button.isEnabled = false
+                        prev_button.isEnabled = false
+                        startstop_button.text = "停止"
+
                     }
                 }
-            }, 200, 200) // 最初に始動させるまで100ミリ秒、ループの間隔を100ミリ秒 に設定
+            }, 2000, 2000) // 最初に始動させるまで100ミリ秒、ループの間隔を100ミリ秒 に設定
+        } else {
+            mTimer!!.cancel()
+            mTimer = null
+
+            next_button.isEnabled = true
+            prev_button.isEnabled = true
+
+            startstop_button.text = "再生"
+
         }
-
-
-
     }
 
 
