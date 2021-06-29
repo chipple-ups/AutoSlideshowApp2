@@ -9,14 +9,20 @@ import android.util.Log
 import android.provider.MediaStore
 import android.content.ContentUris
 import android.database.Cursor
+import android.os.Handler
 import androidx.appcompat.app.AlertDialog
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener  {
 
 
     private var mcursor: Cursor? = null
+    private var mTimer: Timer? = null
+    // タイマー用の時間のための変数
+    private var mTimerSec = 0.0
+    private var mHandler = Handler()
 
 
     private val PERMISSIONS_REQUEST_CODE = 100
@@ -55,18 +61,58 @@ class MainActivity : AppCompatActivity(), View.OnClickListener  {
 
     private fun show_Next(){
         Log.d("ANDROID","tap_showNext")
-        mcursor!!.moveToNext()
+
 
         val fieldIndex = mcursor!!.getColumnIndex(MediaStore.Images.Media._ID)
         val id = mcursor!!.getLong(fieldIndex)
         val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
 
+        if(mcursor!!.isLast()){
+                mcursor!!.moveToFirst()
+            } else {
+            mcursor!!.moveToNext()
+        }
         imageView.setImageURI(imageUri)
     }
     private fun show_Prev(){
 
+        val fieldIndex = mcursor!!.getColumnIndex(MediaStore.Images.Media._ID)
+        val id = mcursor!!.getLong(fieldIndex)
+        val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+
+        if(mcursor!!.isFirst()){
+            mcursor!!.moveToLast()
+        } else {
+            mcursor!!.moveToPrevious()
+        }
+        imageView.setImageURI(imageUri)
+
     }
     private fun startStop(){
+
+        val fieldIndex = mcursor!!.getColumnIndex(MediaStore.Images.Media._ID)
+        val id = mcursor!!.getLong(fieldIndex)
+        val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+
+        if (mTimer == null){
+            mTimer = Timer()
+            mTimer!!.schedule(object : TimerTask() {
+                override fun run() {
+                    //mTimerSec += 0.1
+                    mHandler.post {
+                        //ここに記入
+                        if(mcursor!!.isLast()){
+                            //mcursor!!.moveToFirst()
+                        } else {
+                            mcursor!!.moveToNext()
+                        }
+                        imageView.setImageURI(imageUri)
+                    }
+                }
+            }, 200, 200) // 最初に始動させるまで100ミリ秒、ループの間隔を100ミリ秒 に設定
+        }
+
+
 
     }
 
