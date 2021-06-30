@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener  {
             mcursor!!.moveToPrevious()
         }
         imageView.setImageURI(imageUri)
-        
+
 
     }
     private fun startStop(){
@@ -107,9 +107,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener  {
                         } else {
                             mcursor!!.moveToNext()
                         }
-                        var fieldIndex = mcursor!!.getColumnIndex(MediaStore.Images.Media._ID)
-                        var id = mcursor!!.getLong(fieldIndex)
-                        var imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                        val fieldIndex = mcursor!!.getColumnIndex(MediaStore.Images.Media._ID)
+                        val id = mcursor!!.getLong(fieldIndex)
+                        val imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                         imageView.setImageURI(imageUri)
                         Log.d("ANDROID","imageUri")
 
