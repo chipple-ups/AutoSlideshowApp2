@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener  {
             mcursor!!.moveToPrevious()
         }
         imageView.setImageURI(imageUri)
+        
 
     }
     private fun startStop(){
